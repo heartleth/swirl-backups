@@ -5,3 +5,9 @@
     ouya add ..\backups ignore:
 
     ouya play (delay:seconds)
+
+    ouya backup
+
+    ouya rollback <time> <mode>
+
+    ouya batch
