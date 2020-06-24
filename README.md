@@ -1,13 +1,13 @@
-# ouya-backups
+# swirl-backups
 
-    ouya add ..\backups
+    swirl add ..\backups
 
-    ouya add ..\backups ignore:
+    swirl add ..\backups ignore:
 
-    ouya play (delay:seconds)
+    swirl play (delay:seconds)
 
-    ouya backup
+    swirl backup
 
-    ouya rollback <time> <mode>
+    swirl rollback <time> <mode>
 
-    ouya batch
+    swirl batch
