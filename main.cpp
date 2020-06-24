@@ -1,13 +1,9 @@
-// 
-// ¤Ç¤Ì¤Á...
-// 
-
 #include <iostream>
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <string.h>
-#include <time.h>
+#include <cstring>
+#include <ctime>
 #include <fstream>
 #include <sstream>
 #include <stack>
@@ -89,26 +85,24 @@ void fileonlyRollback(fs::path src, fs::path dest, std::string nowpath = "") {
 	return;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 	if (argc == 1) {
 		setcolor(10, 0);
 		std::cout << R"(
-                                  _                   _                       
-                                 | |                 | |                      
-  ___   _   _  _   _   __ _  ___ | |__    __ _   ___ | | __ _   _  _ __   ___ 
- / _ \ | | | || | | | / _` ||___|| '_ \  / _` | / __|| |/ /| | | || '_ \ / __|
-| (_) || |_| || |_| || (_| |     | |_) || (_| || (__ |   < | |_| || |_) |\__ \
- \___/  \__,_| \__, | \__,_|     |_.__/  \__,_| \___||_|\_\ \__,_|| .__/ |___/
-                __/ |                                             | |         
-               |___/                                              |_|         
+                _        _          _                   _                       
+               (_)      | |        | |                 | |                      
+ ___ __      __ _  _ __ | | ______ | |__    __ _   ___ | | __ _   _  _ __   ___ 
+/ __|\ \ /\ / /| || '__|| ||______|| '_ \  / _` | / __|| |/ /| | | || '_ \ / __|
+\__ \ \ V  V / | || |   | |        | |_) || (_| || (__ |   < | |_| || |_) |\__ \
+|___/  \_/\_/  |_||_|   |_|        |_.__/  \__,_| \___||_|\_\ \__,_|| .__/ |___/
+                                                                    | |         
+                                                                    |_|         
 ::Backup - Rollback tool.
 License: MIT License
-
 [add] <directory> (ignore:)
 [backup]
 [play] <time> (verbose)
 [rollback] <when> (restruct|fileonly)
-
 )";
 		setcolor(7, 0);
 	}
@@ -133,19 +127,19 @@ License: MIT License
 					}
 				}
 			}
-			
+
 			std::cout << std::endl;
 			setcolor(10, 0);
 			printPathes(fs::current_path(), ignores);
 			setcolor(7, 0);
 
 			FILE* ignore;
-			FILE* ouyafile;
-			ignore = fopen(".ouyaignore", "w");
-			ouyafile = fopen(".ouyafile", "w");
+			FILE* swlfile;
+			ignore = fopen(".swlignore", "w");
+			swlfile = fopen(".swlfile", "w");
 
 			std::cout << "will add to" << std::endl;
-			fprintf(ouyafile, fs::absolute(argv[2]).string().c_str());
+			fprintf(swlfile, fs::absolute(argv[2]).string().c_str());
 			setcolor(10, 0);
 			std::cout << fs::absolute(argv[2]).string() << std::endl;
 			fs::path toBackup(fs::absolute(argv[2]).string());
@@ -159,7 +153,7 @@ License: MIT License
 				}
 				else {
 					setcolor(4, 0);
-					std::cout << "ouya needs clear directory.\n";
+					std::cout << "swirl needs clear directory.\n";
 					setcolor(7, 0);
 					return -1;
 				}
@@ -173,7 +167,7 @@ License: MIT License
 				fprintf(ignore, "%s\n", q.c_str());
 			}
 
-			fclose(ouyafile);
+			fclose(swlfile);
 			fclose(ignore);
 		}
 		else if ((argc == 3 || argc == 4) $$ !strcmp(argv[1], "play")) {
@@ -181,22 +175,22 @@ License: MIT License
 			FILE* ignore;
 			FILE* attr;
 
-			if ((ignore = fopen(".ouyaignore", "r")) == NULL) {
-				err("file .ouyaignore required. \"ouya add backups\" to create .ouyaignore\n");
+			if ((ignore = fopen(".swlignore", "r")) == NULL) {
+				err("file .swlignore required. \"swirl add backups\" to create .swlignore\n");
 				return -1;
 			}
-			if ((attr = fopen(".ouyafile", "r")) == NULL) {
-				err("file .ouyafile required. \"ouya add backups\" to create .ouyafile\n");
+			if ((attr = fopen(".swlfile", "r")) == NULL) {
+				err("file .swlfile required. \"swirl add backups\" to create .swlfile\n");
 				return -1;
 			}
 
 
 			int delay = atoi(argv[2]);
 			delay *= 1000;
-			
+
 			char pbuff[200];
 			fscanf(attr, "%s", pbuff);
-			
+
 			fs::path $dirr(pbuff);
 			std::vector<std::string> ignores;
 
@@ -204,7 +198,7 @@ License: MIT License
 				ignores.push_back(pbuff);
 				std::cout << "Path to ignore : " << pbuff << std::endl;
 			}
-			
+
 			if (!fs::exists($dirr)) {
 				err("\nNo directory to paste.\n");
 				return -1;
@@ -215,18 +209,18 @@ License: MIT License
 					isverbose = true;
 				}
 			}
-			
+
 			char _c_buff[80];
 			time_t _rawtime;
 			tm* _timeinfo;
 			time(&_rawtime);
 			_timeinfo = localtime(&_rawtime);
 			strftime(_c_buff, 80, "[%c]", _timeinfo);
-			std::string toMessage("ouya backups started at ");
+			std::string toMessage("swirl backups started at ");
 			toMessage += _c_buff;
 			toMessage += "\n\n";
 			scss(toMessage);
-			
+
 			fclose(attr);
 			fclose(ignore);
 			while (1) {
@@ -245,7 +239,7 @@ License: MIT License
 				catch (const std::exception& errn) {
 					err("\nError during copying directory\nError code : ");
 					std::cout << errn.what() << std::endl;
-					
+
 					return -1;
 				}
 				scss("done : directory backed up at\n" + backupDir.string() + "\n\n");
@@ -256,12 +250,12 @@ License: MIT License
 			FILE* ignore;
 			FILE* attr;
 
-			if ((ignore = fopen(".ouyaignore", "r")) == NULL) {
-				err("file .ouyaignore required. \"ouya add backups\" to create .ouyaignore\n");
+			if ((ignore = fopen(".swlignore", "r")) == NULL) {
+				err("file .swlignore required. \"swirl add backups\" to create .swlignore\n");
 				return -1;
 			}
-			if ((attr = fopen(".ouyafile", "r")) == NULL) {
-				err("file .ouyafile required. \"ouya add backups\" to create .ouyafile\n");
+			if ((attr = fopen(".swlfile", "r")) == NULL) {
+				err("file .swlfile required. \"swl add backups\" to create .swlfile\n");
 				return -1;
 			}
 
@@ -313,12 +307,12 @@ License: MIT License
 			if (!strcmp(argv[3], "restruct")) {
 				FILE* ignore;
 				FILE* attr;
-				if ((ignore = fopen(".ouyaignore", "r")) == NULL) {
-					err("file .ouyaignore required. \"ouya add backups\" to create .ouyaignore\n");
+				if ((ignore = fopen(".swlignore", "r")) == NULL) {
+					err("file .swlignore required. \"swirl add backups\" to create .swlignore\n");
 					return -1;
 				}
-				if ((attr = fopen(".ouyafile", "r")) == NULL) {
-					err("file .ouyafile required. \"ouya add backups\" to create .ouyafile\n");
+				if ((attr = fopen(".swlfile", "r")) == NULL) {
+					err("file .swlfile required. \"swirl add backups\" to create .swlfile\n");
 					return -1;
 				}
 				char pbuff[200];
@@ -360,12 +354,12 @@ License: MIT License
 			else if (!strcmp(argv[3], "fileonly")) {
 				FILE* ignore;
 				FILE* attr;
-				if ((ignore = fopen(".ouyaignore", "r")) == NULL) {
-					err("file .ouyaignore required. \"ouya add backups\" to create .ouyaignore\n");
+				if ((ignore = fopen(".swlignore", "r")) == NULL) {
+					err("file .swlignore required. \"swirl add backups\" to create .swlignore\n");
 					return -1;
 				}
-				if ((attr = fopen(".ouyafile", "r")) == NULL) {
-					err("file .ouyafile required. \"ouya add backups\" to create .ouyafile\n");
+				if ((attr = fopen(".swlfile", "r")) == NULL) {
+					err("file .swlfile required. \"swirl add backups\" to create .swlfile\n");
 					return -1;
 				}
 				char pbuff[200];
